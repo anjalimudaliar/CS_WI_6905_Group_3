@@ -11,7 +11,6 @@ import { useAuth } from "react-oidc-context";
 import { useNavigate } from "react-router-dom"; 
 
 const API_BASE_URL = "https://www.medportal.lol/api"; //Comment while running on local
-const API_BASE_PREDICTION_URL = "https://www.medportal.lol/classifier";
 //const API_BASE_URL = "http://localhost:5000"; // Comment while deploying to server
 
 const Dashboard = () => {
@@ -95,25 +94,19 @@ const Dashboard = () => {
     formData.append("file", file);
   
     try {
-      //Upload X-ray to AI API for Prediction
-      const response = await axios.post(`${API_BASE_PREDICTION_URL}/predict`,
-        formData,
-        { headers: { "Content-Type": "multipart/form-data" } }
-      );
+      // Send the file to your backend API
+      const response = await axios.post(`${API_BASE_URL}/analyze-xray`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          "x-sub": auth.user?.profile.sub, // Include user identifier if needed
+        },
+      });
   
-      const prediction = response.data.prediction;
-      //alert(`X-Ray Prediction: ${prediction}`);
+      const { prediction, timestamp } = response.data;
   
-      //Store Prediction in DynamoDB
-      const timestamp = Date.now();
-      await axios.post(`${API_BASE_URL}/save-xray-prediction`, {
-        prediction,
-        fileName: file.name,
-        timestamp,
-      }, { headers: { "x-sub": auth.user?.profile.sub } });
+      // Update UI with the prediction result
+      setXrayAnalysis({ condition: prediction });
   
-      //Update UI
-      setXrayAnalysis({ condition: prediction});
     } catch (error) {
       console.error("Error processing X-Ray:", error);
       setError("Failed to upload and analyze the X-ray.");
@@ -121,6 +114,7 @@ const Dashboard = () => {
       setLoading(false);
     }
   };
+  
   
   const handleLogout = async () => {
     const clientId = "7rfb69gglntu7klpdq77i9asau";
