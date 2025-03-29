@@ -11,6 +11,7 @@ import { useAuth } from "react-oidc-context";
 import { useNavigate } from "react-router-dom"; 
 
 const API_BASE_URL = "https://www.medportal.lol/api"; //Comment while running on local
+const API_BASE_PREDICTION_URL = "https://www.medportal.lol/classifier";
 //const API_BASE_URL = "http://localhost:5000"; // Comment while deploying to server
 
 const Dashboard = () => {
@@ -95,7 +96,7 @@ const Dashboard = () => {
   
     try {
       //Upload X-ray to AI API for Prediction
-      const response = await axios.post(`${API_BASE_URL}/classifier/predict`,
+      const response = await axios.post(`${API_BASE_PREDICTION_URL}/predict`,
         formData,
         { headers: { "Content-Type": "multipart/form-data" } }
       );
