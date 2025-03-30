@@ -3,8 +3,6 @@
 Tech Stack
 Frontend (User Interface)
 
-Since the UI needs to be interactive, responsive, and modern, the best approach is to use:
-
     React.js (for component-based UI)
     Next.js (for server-side rendering and better SEO, optional)
     Tailwind CSS (for easy styling)
@@ -12,14 +10,10 @@ Since the UI needs to be interactive, responsive, and modern, the best approach 
 
 Backend
 
-To handle API requests, authentication, and data processing:
-
     Node.js with Express.js (lightweight backend framework)
     MongoDB Atlas (NoSQL Database) for on-premise training storage
     Amazon DynamoDB (NoSQL) for medical history and inference results
-    Amazon S3 (for storing X-ray images)
-    Amazon API Gateway (to manage API requests)
-    AWS Lambda (for serverless execution, optional)
+    pm2 for running the server
     AWS EC2 (for hosting the backend and web app)
 
 Machine Learning
