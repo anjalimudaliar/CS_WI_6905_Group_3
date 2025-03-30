@@ -173,7 +173,6 @@ const DoctorDashboard = () => {
         "x-sub": selectedXrayPatient,
       };
       const response = await axios.post(`${API_BASE_URL}/analyze-xray`, formData, { headers });
-      alert("X-Ray uploaded successfully!");
       setXrayAnalysis(response.data);
       fetchAggregatedProfiles();
     } catch (err) {
