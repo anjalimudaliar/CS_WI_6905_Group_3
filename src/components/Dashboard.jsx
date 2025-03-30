@@ -8,10 +8,10 @@ import {
   LogoutIcon 
 } from "@heroicons/react/outline";
 import { useAuth } from "react-oidc-context";
-import { useNavigate } from "react-router-dom"; 
+import { useNavigate } from "react-router-dom";
 
-const API_BASE_URL = "https://www.medportal.lol/api"; //Comment while running on local
-//const API_BASE_URL = "http://localhost:5000"; // Comment while deploying to server
+//const API_BASE_URL = "https://www.medportal.lol/api"; //Comment while running on local
+const API_BASE_URL = "http://localhost:5000"; // Comment while deploying to server
 
 const Dashboard = () => {
   const [userData, setUserData] = useState(null);
@@ -102,7 +102,7 @@ const Dashboard = () => {
         },
       });
   
-      const { prediction, timestamp } = response.data;
+      const { prediction } = response.data;
   
       // Update UI with the prediction result
       setXrayAnalysis({ condition: prediction });
@@ -115,11 +115,10 @@ const Dashboard = () => {
     }
   };
   
-  
   const handleLogout = async () => {
     const clientId = "7rfb69gglntu7klpdq77i9asau";
-    //const logoutUri = "http://localhost:3000/"; // Change to production domain if needed
-    const logoutUri = "https://www.medportal.lol/";
+    const logoutUri = "http://localhost:3000/"; // Change to production domain if needed
+    //const logoutUri = "https://www.medportal.lol/";
     const cognitoDomain = "https://us-east-24tftlwzgp.auth.us-east-2.amazoncognito.com";
     // Clear Local Storage & Session Storage
     localStorage.clear();
@@ -127,6 +126,9 @@ const Dashboard = () => {
     await auth.removeUser(); // Clears authentication session
     window.location.href = `${cognitoDomain}/logout?client_id=${clientId}&logout_uri=${encodeURIComponent(logoutUri)}`;
   };
+
+  // Determine which message to show based on basic profile info
+  const hasBasicInfo = userData && userData.Age && userData.BloodType && userData.Weight;
 
   return (
     <div className="min-h-screen bg-gray-100">
@@ -172,9 +174,9 @@ const Dashboard = () => {
               <>
                 <h3 className="text-xl font-semibold">{userData.FullName}</h3>
                 <p className="text-gray-600">ID: {userData.PatientID}</p>
-                <p className="mt-2"><strong>Age:</strong> {userData.Age}</p>
-                <p><strong>Blood Type:</strong> {userData.BloodType}</p>
-                <p><strong>Weight:</strong> {userData.Weight}</p>
+                <p className="mt-2"><strong>Age:</strong> {userData.Age || "N/A"}</p>
+                <p><strong>Blood Type:</strong> {userData.BloodType || "N/A"}</p>
+                <p><strong>Weight:</strong> {userData.Weight || "N/A"}</p>
               </>
             )}
           </div>
@@ -182,21 +184,37 @@ const Dashboard = () => {
           {/* Recent Records */}
           <div className="bg-white p-4 rounded-lg shadow">
             <h3 className="text-lg font-semibold">Recent Records</h3>
-            {records.map((record, index) => (
-              <p key={index} className="mt-2">
-                {record.Diagnosis} - {record.Date}
+            {records.length > 0 ? (
+              records.map((record, index) => (
+                <p key={index} className="mt-2">
+                  {record.Diagnosis} - {record.Date}
+                </p>
+              ))
+            ) : (
+              <p className="text-gray-500 mt-2">
+                {hasBasicInfo
+                  ? "Doctor will add details soon"
+                  : "Please visit our doctors for consultation"}
               </p>
-            ))}
+            )}
           </div>
 
           {/* Active Prescriptions */}
           <div className="bg-white p-4 rounded-lg shadow">
             <h3 className="text-lg font-semibold">Active Prescriptions</h3>
-            {prescriptions.map((prescription, index) => (
-              <p key={index} className="mt-2">
-                {prescription.Name || prescription.name} - {prescription.Dosage || prescription.dosage}
+            {prescriptions.length > 0 ? (
+              prescriptions.map((prescription, index) => (
+                <p key={index} className="mt-2">
+                  {prescription.Name || prescription.name} - {prescription.Dosage || prescription.dosage}
+                </p>
+              ))
+            ) : (
+              <p className="text-gray-500 mt-2">
+                {hasBasicInfo
+                  ? "Doctor will add details soon"
+                  : "Please visit our doctors for consultation"}
               </p>
-            ))}
+            )}
           </div>
         </div>
 

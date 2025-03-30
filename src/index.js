@@ -8,8 +8,8 @@ import { AuthProvider } from "react-oidc-context";
 const cognitoAuthConfig = {
   authority: "https://cognito-idp.us-east-2.amazonaws.com/us-east-2_4TftlWzgP",
   client_id: "7rfb69gglntu7klpdq77i9asau",
-  redirect_uri: "https://www.medportal.lol/auth/callback", // Updated callback route
-  //redirect_uri: "http://localhost:3000/auth/callback", // Updated callback route
+  //redirect_uri: "https://www.medportal.lol/auth/callback", // Updated callback route
+  redirect_uri: "http://localhost:3000/auth/callback", // Updated callback route
   response_type: "code",
   scope: "email openid phone",
 };
