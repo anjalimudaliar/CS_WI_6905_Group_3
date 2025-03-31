@@ -11,6 +11,7 @@ import { useAuth } from "react-oidc-context";
 import { useNavigate } from "react-router-dom";
 
 const API_BASE_URL = "http://localhost:5000"; // Adjust as needed
+//const API_BASE_URL = "https://www.medportal.lol/api"; //Comment while running on local
 
 const DoctorDashboard = () => {
   const auth = useAuth();
@@ -350,6 +351,7 @@ const removePrescLine = (index) => {
   const handleLogout = async () => {
     const clientId = "7rfb69gglntu7klpdq77i9asau";
     const logoutUri = "http://localhost:3000/";
+    //const logoutUri = "https://www.medportal.lol/";
     const cognitoDomain =
       "https://us-east-24tftlwzgp.auth.us-east-2.amazoncognito.com";
     localStorage.clear();
