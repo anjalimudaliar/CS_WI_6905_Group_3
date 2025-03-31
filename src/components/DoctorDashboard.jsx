@@ -25,6 +25,9 @@ const DoctorDashboard = () => {
   const [removedPrescriptions, setRemovedPrescriptions] = useState([]);
   const [removedRecordsState, setRemovedRecordsState] = useState([]);
   const [removedXrayRecords, setRemovedXrayRecords] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filteredPatients, setFilteredPatients] = useState([]);
+
   // New patient/prescription/record forms
   const [newPatient, setNewPatient] = useState({
     FullName: "",
@@ -69,6 +72,17 @@ const DoctorDashboard = () => {
       fetchAggregatedProfiles();
     }
   }, [auth, navigate]);
+
+  useEffect(() => {
+    if (searchQuery.trim() === "") {
+      setFilteredPatients(aggregatedProfiles);
+    } else {
+      const filtered = aggregatedProfiles.filter((patient) =>
+        patient.profile?.Username?.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+      setFilteredPatients(filtered);
+    }
+  }, [searchQuery, aggregatedProfiles]);
 
   const fetchAggregatedProfiles = async () => {
     try {
@@ -317,6 +331,8 @@ const removePrescLine = (index) => {
   
       // Refresh data and clear editing state
       fetchAggregatedProfiles();
+      //added for search feature
+      
       setEditingPatient(null);
       // Clear removed items
       setRemovedPrescriptions([]);
@@ -344,8 +360,8 @@ const removePrescLine = (index) => {
   // Pagination Calculations
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = aggregatedProfiles.slice(indexOfFirstItem, indexOfLastItem);
-  const totalPages = Math.ceil(aggregatedProfiles.length / itemsPerPage);
+  const currentItems = filteredPatients.slice(indexOfFirstItem, indexOfLastItem);
+  const totalPages = Math.ceil(filteredPatients.length / itemsPerPage);
 
   // Logout function
   const handleLogout = async () => {
@@ -397,6 +413,23 @@ const removePrescLine = (index) => {
       <div className="p-6">
         <h2 className="text-3xl font-bold text-gray-800 mb-4">Doctor Dashboard</h2>
         {error && <p className="text-red-500 mb-4">{error}</p>}
+
+        <div className="mb-4 flex items-center">
+        <input
+            type="text"
+            placeholder="Search by Username"
+            className="border border-gray-300 rounded px-3 py-1 mr-2 text-sm"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+        />
+        <button
+          onClick={() => setSearchQuery("")}
+          className="bg-gray-300 hover:bg-gray-400 text-sm px-3 py-1 rounded"
+        >
+          Clear
+        </button>
+        </div>
+
 
         {/* Patient Table */}
         <div className="overflow-x-auto mb-4">
